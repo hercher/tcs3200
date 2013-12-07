@@ -58,7 +58,6 @@ static ssize_t tcs_read(struct file *f, char __user *buf, size_t count, loff_t *
 	if(copy_to_user(buf, &tcs->measurement + *off, count))
 		return -EFAULT;
 
-	*off += count;
 	printk(KERN_INFO "read %d bytes\n", count);
 	return count;
 }
