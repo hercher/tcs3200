@@ -68,12 +68,12 @@ static ssize_t tcs_write(struct file *f, const char __user *buf, size_t len, lof
 }
 
 static struct file_operations tcs_fops = {
-		.owner = THIS_MODULE,
-		.llseek = no_llseek,
-		.open = tcs_open,
-		.release = tcs_close,
-		.read = tcs_read,
-		.write = tcs_write
+	.owner = THIS_MODULE,
+	.llseek = no_llseek,
+	.open = tcs_open,
+	.release = tcs_close,
+	.read = tcs_read,
+	.write = tcs_write
 };
 
 static struct tcs_dev *tcs;

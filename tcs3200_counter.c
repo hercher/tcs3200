@@ -100,17 +100,17 @@ int tcs_counter_init(struct tcs_dev *tcs) {
 		printk(KERN_ERR "%s:%s:%s\n", KBUILD_MODNAME, __FUNCTION__, "failed to request interrupt pin");
 		goto fail_gpio;
 	}
-    if((tcs->irq = gpio_to_irq(TCS_OUT_PIN)) < 0) {
-    	printk(KERN_ERR "%s:%s:%s\n", KBUILD_MODNAME, __FUNCTION__, "failed to register interrupt pin");
-    	goto fail_gpio2int;
-    }
-    if(request_any_context_irq(tcs->irq, tcs3200_irq,
-    			IRQF_TRIGGER_FALLING,
-    			"tcs3200", tcs)) {
-    	printk(KERN_ERR "%s:%s:%s\n", KBUILD_MODNAME, __FUNCTION__, "failed to register interrupt handler");
-    	goto fail_irq;
-    }
-    printk(KERN_INFO "tcs3200: using interrupt %d for frequency measurement\n", tcs->irq);
+	if((tcs->irq = gpio_to_irq(TCS_OUT_PIN)) < 0) {
+		printk(KERN_ERR "%s:%s:%s\n", KBUILD_MODNAME, __FUNCTION__, "failed to register interrupt pin");
+		goto fail_gpio2int;
+	}
+	if(request_any_context_irq(tcs->irq, tcs3200_irq,
+			IRQF_TRIGGER_FALLING,
+			"tcs3200", tcs)) {
+		printk(KERN_ERR "%s:%s:%s\n", KBUILD_MODNAME, __FUNCTION__, "failed to register interrupt handler");
+		goto fail_irq;
+	}
+	printk(KERN_INFO "tcs3200: using interrupt %d for frequency measurement\n", tcs->irq);
 	return 0;
 
 fail_irq:
@@ -125,12 +125,12 @@ void tcs_counter_exit(struct tcs_dev *tcs) {
 	tcs_disable(tcs);
 	hrtimer_cancel(&tcs->timer);
 	free_irq(tcs->irq, tcs);
-    gpio_free(TCS_OUT_PIN);
+	gpio_free(TCS_OUT_PIN);
 }
 
 int tcs_start_measurement(struct tcs_dev *tcs) {
-
 	struct tcs3200_measurement *m = &tcs->measurement;
+
 	memset(m, 0, sizeof(struct tcs3200_measurement));
 	tcs_setup_output(MED);
 	tcs_setup_color(WHITE);
@@ -147,6 +147,5 @@ int tcs_stop_measurement(struct tcs_dev *tcs) {
 
 	tcs_setup_output(PWR_DOWN);
 	tcs_disable(tcs);
-
 	return 0;
 }
