@@ -37,18 +37,25 @@ static ssize_t tcs_read(struct file *f, char __user *buf, size_t count, loff_t *
 	struct tcs_dev *tcs = f->private_data;
 	size_t max = sizeof(struct tcs3200_measurement);
 
-	printk(KERN_ERR "%s:%s:reading %d bytes with offset %d\n", KBUILD_MODNAME, __FUNCTION__, count, (int)*off);
+	//printk(KERN_ERR "%s:%s:reading %d bytes with offset %d\n", KBUILD_MODNAME, __FUNCTION__, count, (int)*off);
 	if (*off >= max || !count)
 		return 0;
 
 	tcs_start_measurement(tcs);
 	add_wait_queue(&tcs->waitq, &wait);
-	set_current_state(TASK_INTERRUPTIBLE);
-	schedule();
-	if(signal_pending(current)) {
-		set_current_state(TASK_RUNNING);
-		remove_wait_queue(&tcs->waitq, &wait);
-		return -ERESTARTSYS;
+	while(1) {
+		set_current_state(TASK_INTERRUPTIBLE);
+		schedule();
+		if(signal_pending(current)) {
+			set_current_state(TASK_RUNNING);
+			remove_wait_queue(&tcs->waitq, &wait);
+			tcs_stop_measurement(tcs);
+			return -ERESTARTSYS;
+		}
+		if(tcs->state == READ_DONE) {
+			tcs_stop_measurement(tcs);
+			break;
+		}
 	}
 	remove_wait_queue(&tcs->waitq, &wait);
 
@@ -58,7 +65,6 @@ static ssize_t tcs_read(struct file *f, char __user *buf, size_t count, loff_t *
 	if(copy_to_user(buf, &tcs->measurement + *off, count))
 		return -EFAULT;
 
-	printk(KERN_INFO "read %d bytes\n", count);
 	return count;
 }
 
@@ -112,7 +118,6 @@ static int __init tcs3200_init(void) {
 	init_waitqueue_head(&tcs->waitq);
 	tcs_control_init(tcs);
 	tcs_counter_init(tcs);
-	printk(KERN_INFO "tcs3200 loaded\n");
 	return 0;
 
 dev_fail:

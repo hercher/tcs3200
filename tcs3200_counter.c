@@ -83,8 +83,10 @@ static irqreturn_t tcs3200_irq(int irq, void *in) {
 			printk(KERN_ERR "%s:%s:%s:%d\n", KBUILD_MODNAME, __FUNCTION__, "invalid state:", tcs->state);
 		}
 	}
+/*
 	else
 		printk(KERN_ERR "%s:%s:%s\n", KBUILD_MODNAME, __FUNCTION__, "ignoring unexpected interrupt");
+*/
 	return IRQ_HANDLED;
 }
 
@@ -147,5 +149,6 @@ int tcs_stop_measurement(struct tcs_dev *tcs) {
 
 	tcs_setup_output(PWR_DOWN);
 	tcs_disable(tcs);
+	tcs->state = READ_WHITE_HEAD;
 	return 0;
 }
