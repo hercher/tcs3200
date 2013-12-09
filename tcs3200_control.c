@@ -93,7 +93,7 @@ int tcs_setup_output(enum tcs_output_frequency f) {
 /*
  * init tcs3200 control
  */
-int tcs_control_init(struct tcs_dev *tcs) {
+int __init tcs_control_init(struct tcs_dev *tcs) {
 
 	atomic_set(&tcs->enabled, 0);
 	/* init enable pin (active low)*/
@@ -135,7 +135,7 @@ fail_enable:
 	return -1;
 }
 
-void tcs_control_exit(void) {
+void __exit tcs_control_exit(void) {
 
 	gpio_free(TCS_S3_PIN);
 	gpio_free(TCS_S2_PIN);

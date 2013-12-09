@@ -90,7 +90,7 @@ static irqreturn_t tcs3200_irq(int irq, void *in) {
 	return IRQ_HANDLED;
 }
 
-int tcs_counter_init(struct tcs_dev *tcs) {
+int __init tcs_counter_init(struct tcs_dev *tcs) {
 
 	tcs->dwell = ZZZ;
 	hrtimer_init(&tcs->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
@@ -122,7 +122,7 @@ fail_gpio:
 	return -1;
 }
 
-void tcs_counter_exit(struct tcs_dev *tcs) {
+void __exit tcs_counter_exit(struct tcs_dev *tcs) {
 
 	tcs_disable(tcs);
 	hrtimer_cancel(&tcs->timer);
