@@ -63,7 +63,7 @@ int tcs_setup_color(enum tcs_color c) {
  * handles power down mode as well
  * see datasheet for typical values
  */
-int tcs_setup_output(enum tcs_output_frequency f) {
+int tcs_setup_frequency(struct tcs_dev *tcs, enum tcs_output_frequency f) {
 
 	switch(f) {
 	//TODO: check return values
@@ -74,14 +74,17 @@ int tcs_setup_output(enum tcs_output_frequency f) {
 	case LOW:
 		gpio_set_value(TCS_S0_PIN, 0);
 		gpio_set_value(TCS_S1_PIN, 1);
+		tcs->dwell = SLEEP_LOW;
 		break;
 	case MED:
 		gpio_set_value(TCS_S0_PIN, 1);
 		gpio_set_value(TCS_S1_PIN, 0);
+		tcs->dwell = SLEEP_MED;
 		break;
 	case HIGH:
 		gpio_set_value(TCS_S0_PIN, 1);
 		gpio_set_value(TCS_S1_PIN, 1);
+		tcs->dwell = SLEEP_HIGH;
 		break;
 	default:
 		printk(KERN_ERR "%s:%s:%s\n", KBUILD_MODNAME, __FUNCTION__, "invalid output setting");
@@ -119,7 +122,7 @@ int __init tcs_control_init(struct tcs_dev *tcs) {
 		printk(KERN_ERR "%s:%s:%s\n", KBUILD_MODNAME, __FUNCTION__, "failed to register S3 pin");
 		goto fail_s3;
 	}
-	tcs_setup_output(PWR_DOWN);
+	tcs_setup_frequency(tcs, PWR_DOWN);
 	tcs_disable(tcs);
 	return 0;
 

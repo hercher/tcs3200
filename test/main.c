@@ -24,7 +24,6 @@ int main(void) {
         int fd;
         struct tcs3200_measurement m;
 
-        printf("hello master\n");
         fd = open(TCSDEV, O_RDONLY);
         if(fd < 0) {
                 perror("open failed");
@@ -39,7 +38,6 @@ int main(void) {
                         printf("white tail   %u\n", m.white_tail);
                 }
                 printf("\n");
-                sleep(1);
         }
         return 0;
 }

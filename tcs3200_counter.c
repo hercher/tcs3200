@@ -44,7 +44,7 @@ static enum hrtimer_restart tcs3200_timer(struct hrtimer *timer) {
 	default:
 		printk(KERN_ERR "%s:%s:%s:%d\n", KBUILD_MODNAME, __FUNCTION__, "invalid state:", tcs->state);
 	case READ_DONE:
-		tcs_setup_output(PWR_DOWN);
+		tcs_setup_frequency(tcs, PWR_DOWN);
 		wake_up_interruptible(&tcs->waitq);
 		return HRTIMER_NORESTART;
 	}
@@ -92,7 +92,6 @@ static irqreturn_t tcs3200_irq(int irq, void *in) {
 
 int __init tcs_counter_init(struct tcs_dev *tcs) {
 
-	tcs->dwell = ZZZ;
 	hrtimer_init(&tcs->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
 	tcs->timer.function = &tcs3200_timer;
 	tcs->state = READ_WHITE_HEAD;
@@ -134,7 +133,7 @@ int tcs_start_measurement(struct tcs_dev *tcs) {
 	struct tcs3200_measurement *m = &tcs->measurement;
 
 	memset(m, 0, sizeof(struct tcs3200_measurement));
-	tcs_setup_output(MED);
+	tcs_setup_frequency(tcs, HIGH);
 	tcs_setup_color(WHITE);
 	tcs->state = READ_WHITE_HEAD;
 	tcs_enable(tcs);
@@ -147,7 +146,7 @@ int tcs_start_measurement(struct tcs_dev *tcs) {
 
 int tcs_stop_measurement(struct tcs_dev *tcs) {
 
-	tcs_setup_output(PWR_DOWN);
+	tcs_setup_frequency(tcs, PWR_DOWN);
 	tcs_disable(tcs);
 	tcs->state = READ_WHITE_HEAD;
 	return 0;

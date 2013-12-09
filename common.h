@@ -15,7 +15,9 @@
 #include <linux/wait.h>
 
 /* in nanoseconds */
-#define ZZZ 10000000L
+#define SLEEP_LOW	100000UL
+#define SLEEP_MED	1000000UL
+#define SLEEP_HIGH	10000000UL
 
 enum STATE {
 		READ_WHITE_HEAD = 1,
@@ -65,7 +67,7 @@ enum tcs_color {
 void tcs_enable(struct tcs_dev *);
 void tcs_disable(struct tcs_dev *);
 int tcs_setup_color(enum tcs_color);
-int tcs_setup_output(enum tcs_output_frequency);
+int tcs_setup_frequency(struct tcs_dev *, enum tcs_output_frequency);
 int tcs_control_init(struct tcs_dev *);
 void tcs_control_exit(void);
 /* frequency counter stuff */
