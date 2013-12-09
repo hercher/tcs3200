@@ -15,17 +15,17 @@
 #include <linux/wait.h>
 
 /* in nanoseconds */
-#define SLEEP_LOW	100000UL
-#define SLEEP_MED	1000000UL
-#define SLEEP_HIGH	10000000UL
+#define SLEEP_LOW       100000UL
+#define SLEEP_MED       1000000UL
+#define SLEEP_HIGH      10000000UL
 
 enum STATE {
-		READ_WHITE_HEAD = 1,
-		READ_RED,
-		READ_GREEN,
-		READ_BLUE,
-		READ_WHITE_TAIL,
-		READ_DONE,
+	READ_WHITE_HEAD = 1,
+	READ_RED,
+	READ_GREEN,
+	READ_BLUE,
+	READ_WHITE_TAIL,
+	READ_DONE,
 };
 
 struct tcs3200_measurement {
